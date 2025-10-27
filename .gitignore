@@ -1,0 +1,24 @@
+# Node / Next
+node_modules
+.next
+dist
+out
+
+# Env & local configs
+.env
+.env.local
+.env.*.local
+*.log
+
+# Editor files
+.vscode
+.idea
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Lockfiles (optional if you use only one)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

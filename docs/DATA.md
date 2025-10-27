@@ -1,0 +1,3 @@
+- Ingest cadence: every 1 min (pm2 cron)
+- Redis TTL: 60s
+- Snapshots table reserved for deltas in Phase 2
