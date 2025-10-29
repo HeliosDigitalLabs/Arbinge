@@ -1,201 +1,199 @@
-"use client";
+// app/page.tsx
+import { Card } from "@/components/ui/card";
+import { Section } from "@/components/ui/section";
+import { Kpi } from "@/components/ui/kpi";
+import { CategoryPie } from "@/components/dashboard/category-pie";
+import { TopMarkets } from "@/components/dashboard/top-markets";
+import { TopMovers } from "@/components/dashboard/top-movers";
+import { NewMarketSpotlight } from "@/components/dashboard/new-market-spotlight";
+import { TrendingTopics } from "@/components/dashboard/trending-topics";
 
-import React from "react";
-import useSWR from "swr";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+export default async function Page() {
+  const topMarkets = [
+    {
+      id: "1",
+      title: "Will BTC > $60k at 2024 close?",
+      priceCents: 72,
+      url: "https://polymarket.com/event/1",
+    },
+    {
+      id: "2",
+      title: "Will ETH reach ATH in 2024?",
+      priceCents: 23,
+      url: "https://polymarket.com/event/2",
+    },
+    {
+      id: "3",
+      title: "Will Trump win the 2024 election?",
+      priceCents: 45,
+      url: "https://polymarket.com/event/3",
+    },
+    {
+      id: "4",
+      title: "Will Solana exceed $300 in 2025?",
+      priceCents: 31,
+      url: "https://polymarket.com/event/4",
+    },
+    {
+      id: "5",
+      title: "Will Solana exceed $300 in 2025?",
+      priceCents: 31,
+      url: "https://polymarket.com/event/4",
+    },
+  ];
 
-/**
- * DROP-IN USAGE
- * -------------
- * 1) Put this file somewhere like `apps/web/app/dashboard/page.tsx` (or replace your `app/page.tsx`).
- * 2) Ensure NEXT_PUBLIC_API_URL is set to your API base (e.g., http://104.248.224.160:4001).
- * 3) This page fetches once on mount and then revalidates every hour (client-side) to match your ingest cadence.
- */
+  const movers = [
+    {
+      id: "m1",
+      title: "Will Bitcoin ETF approval hold?",
+      deltaPct: 45.2,
+      url: "https://polymarket.com/event/m1",
+    },
+    {
+      id: "m2",
+      title: "Will Democrats win Michigan?",
+      deltaPct: -12.8,
+      url: "https://polymarket.com/event/m2",
+    },
+    {
+      id: "m3",
+      title: "Will the Fed cut rates in June?",
+      deltaPct: 29.4,
+      url: "https://polymarket.com/event/m3",
+    },
+    {
+      id: "m4",
+      title: "Will SpaceX launch Starship again?",
+      deltaPct: 18.3,
+      url: "https://polymarket.com/event/m4",
+    },
+    {
+      id: "m5",
+      title: "Will SpaceX launch Starship again?",
+      deltaPct: 18.3,
+      url: "https://polymarket.com/event/m4",
+    },
+  ];
+  const pie = [
+    { label: "Politics", value: 42, color: "#ff7a45", volumeUsd: 1_250_000 },
+    { label: "Crypto", value: 28, color: "#00d8ff", volumeUsd: 980_000 },
+    { label: "Sports", value: 14, color: "#2fd673", volumeUsd: 320_000 },
+    { label: "Tech", value: 9, color: "#c084f5", volumeUsd: 210_000 },
+    { label: "Other", value: 7, color: "#f59e0b", volumeUsd: 150_000 },
+  ];
+  const totalMarkets = 1234;
 
-// ---- Types aligned with your server ----
-export type Summary = {
-  activeMarkets: number;
-  totalVolume24h: number;
-  totalOpenInterest: number;
-  byPlatform: {
-    polymarket: { active: number; vol24h: number; oi: number };
-    kalshi: { active: number; vol24h: number; oi: number };
+  const spotlight = {
+    id: "s1",
+    title: "Will Solana hit $300 by 12/31?",
+    yesCents: 46,
+    noCents: 54,
+    firstDayVolumeUsd: 45210,
+    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
   };
-  byCategory: Array<{ category: string; vol24h: number; count: number }>;
-};
-
-export type Market = {
-  id: string;
-  platform: "polymarket" | "kalshi" | string;
-  question: string;
-  category?: string;
-  yesPrice?: number | null;
-  volume24h?: number | null;
-  openInterest?: number | null;
-};
-
-const fetcher = async <T,>(path: string): Promise<T> => {
-  const base = process.env.NEXT_PUBLIC_API_URL!;
-  const r = await fetch(`${base}${path}`, { cache: "no-store" });
-  if (!r.ok) throw new Error(`${path} -> ${r.status}`);
-  return r.json();
-};
-
-const fmtMoney = (n?: number | null) =>
-  typeof n === "number" ? `$${Math.round(n).toLocaleString()}` : "-";
-
-const fmtNum = (n: number) => n.toLocaleString();
-
-// A simple hour-level revalidation (60 * 60 * 1000)
-const ONE_HOUR = 3600000;
-
-export default function DashboardPage() {
-  const { data: summary, error: se, isLoading: sl } = useSWR<Summary>(
-    "/v1/summary",
-    fetcher,
-    { refreshInterval: ONE_HOUR }
-  );
+  const topics = ["AI", "Trump", "Bitcoin", "Fed", "Elon Musk"];
 
   return (
-    <main className="mx-auto max-w-7xl p-6 min-h-screen bg-[#0b1220] text-gray-200">
-      <h1 className="text-2xl font-semibold mb-6">Arbinge — Prediction Market Macro Dashboard</h1>
+    <main className="p-3 sm:p-6 max-w-7xl mx-auto">
+      {/* PAGE GRID: top full-width row, bottom split 2/3 + 1/3 */}
+      <div className="grid gap-6 lg:grid-cols-3 auto-rows-min">
+        {/* =========================================================
+        1️⃣ MARKET OVERVIEW — FULL TOP ROW
+      ========================================================== */}
+        <Section title="Key Performance Indicators" className="col-span-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <Card className="p-4 min-w-[200px] whitespace-nowrap">
+              <Kpi label="24h Vol" value="$1,211,441" />
+            </Card>
+            <Card className="p-4 min-w-[200px] whitespace-nowrap">
+              <Kpi label="Open Interest" value="$7,804,112" />
+            </Card>
+            <Card className="p-4 min-w-[200px] whitespace-nowrap">
+              <Kpi label="Total Volume" value="$102,344,129" />
+            </Card>
+            <Card className="p-4 min-w-[200px] whitespace-nowrap">
+              <Kpi label="New Markets (24h)" value="12" />
+            </Card>
+          </div>
+        </Section>
 
-      {summary && (
-        <TopStats summary={summary} />
-      )}
+        {/* =========================================================
+        2️⃣ LEFT: MARKET ACTIVITY (2/3 WIDTH)
+      ========================================================== */}
+        <Section title="Market Activity (24h)" className="col-span-2">
+          <div className="grid gap-6">
+            {/* TOP ROW: Two lists side-by-side */}
+            <div className="grid gap-6 lg:grid-cols-2 items-start">
+              {/* Top Markets */}
+              <Card className="h-full">
+                <div className="uppercase tracking-wide text-[.75rem] text-[--color-muted] mb-2">
+                  Top Markets (24h)
+                </div>
+                <TopMarkets markets={topMarkets.slice(0, 5)} />
+              </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {summary && (
-          <Card title="Platform Breakdown (Active / 24h Vol / OI)">
-            <PlatformBars summary={summary} />
-          </Card>
-        )}
+              {/* Top Movers */}
+              <Card className="h-full">
+                <div className="uppercase tracking-wide text-[.75rem] text-[--color-muted] mb-2">
+                  Top Movers (24h)
+                </div>
+                <TopMovers movers={movers.slice(0, 5)} />
+              </Card>
+            </div>
 
-        {summary && (
-          <Card title="Top Categories by 24h Volume (Top 8)">
-            <CategoriesBar summary={summary} />
-          </Card>
-        )}
-      </div>  
+            {/* BOTTOM ROW: Hottest New Market spans 2/3 of section width */}
+            <div className="flex justify-center">
+              <Card className="w-[66.666%] pt-3 pb-0">
+                <NewMarketSpotlight
+                  m={{
+                    id: spotlight.id,
+                    title: spotlight.title,
+                    volume: `$${spotlight.firstDayVolumeUsd.toLocaleString()}`,
+                    launched: new Date(spotlight.createdAt).toLocaleString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                      }
+                    ),
+                    outcomes: [
+                      {
+                        label: "YES",
+                        priceCents: spotlight.yesCents,
+                        color: "#00E5FF",
+                      },
+                      {
+                        label: "NO",
+                        priceCents: spotlight.noCents,
+                        color: "#FF3B58",
+                      },
+                    ],
+                  }}
+                />
+              </Card>
+            </div>
+          </div>
+        </Section>
 
-      <footer className="mt-10 text-xs text-gray-500">
-        Updates hourly • Data source: Polymarket & Kalshi • Last refresh is client-side; ensure workers run hourly
-      </footer>
+        {/* =========================================================
+        3️⃣ RIGHT: CATEGORIES & TOPICS (1/3 WIDTH)
+      ========================================================== */}
+        <Section title="Categories & Topics" className="col-span-1">
+          <div className="grid gap-6">
+            {/* Categories (pie + legend) FIRST */}
+            <Card className="flex flex-col justify-center items-center p-6">
+              <div className="max-w-[260px] w-full">
+                <CategoryPie data={pie} title="Categories" total={1234} />
+              </div>
+            </Card>
+
+            {/* Trending Topics SECOND */}
+            <Card className="p-3">
+              <TrendingTopics topics={topics} />
+            </Card>
+          </div>
+        </Section>
+      </div>
     </main>
   );
-}
-
-// ---- UI Primitives ----
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="bg-[#111827] rounded-2xl p-4 shadow-lg border border-[#1f2937]">
-      <div className="text-sm text-gray-400 mb-3">{title}</div>
-      {children}
-    </section>
-  );
-}
-
-function KPI({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-[#111827] rounded-2xl p-4 shadow-lg border border-[#1f2937]">
-      <div className="text-xs text-gray-400">{label}</div>
-      <div className="text-2xl mt-1">{value}</div>
-    </div>
-  );
-}
-
-// ---- Sections ----
-function TopStats({ summary }: { summary: Summary }) {
-  const kpis = [
-    { label: "Active Markets (All)", value: fmtNum(summary.activeMarkets) },
-    { label: "24h Volume (All)", value: fmtMoney(summary.totalVolume24h) },
-    { label: "Open Interest (All)", value: fmtMoney(summary.totalOpenInterest) },
-    { label: "Active — Polymarket", value: fmtNum(summary.byPlatform.polymarket.active) },
-    { label: "Active — Kalshi", value: fmtNum(summary.byPlatform.kalshi.active) },
-    { label: "24h Vol — Polymarket", value: fmtMoney(summary.byPlatform.polymarket.vol24h) },
-    { label: "24h Vol — Kalshi", value: fmtMoney(summary.byPlatform.kalshi.vol24h) },
-    { label: "OI — Polymarket", value: fmtMoney(summary.byPlatform.polymarket.oi) },
-    { label: "OI — Kalshi", value: fmtMoney(summary.byPlatform.kalshi.oi) },
-  ];
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-      {kpis.map((k) => (
-        <KPI key={k.label} label={k.label} value={k.value} />
-      ))}
-    </div>
-  );
-}
-
-function PlatformBars({ summary }: { summary: Summary }) {
-  const data = [
-    {
-      name: "Polymarket",
-      Active: summary.byPlatform.polymarket.active,
-      "24h Vol": Math.round(summary.byPlatform.polymarket.vol24h || 0),
-      OI: Math.round(summary.byPlatform.polymarket.oi || 0),
-    },
-    {
-      name: "Kalshi",
-      Active: summary.byPlatform.kalshi.active,
-      "24h Vol": Math.round(summary.byPlatform.kalshi.vol24h || 0),
-      OI: Math.round(summary.byPlatform.kalshi.oi || 0),
-    },
-  ];
-
-  return (
-    <div className="h-72">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Active" />
-          <Bar dataKey="24h Vol" />
-          <Bar dataKey="OI" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-function CategoriesBar({ summary }: { summary: Summary }) {
-  const data = (summary.byCategory || [])
-    .slice(0, 8)
-    .map((c) => ({ name: c.category || "uncategorized", Volume: Math.round(c.vol24h || 0) }));
-
-  return (
-    <div className="h-72">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" interval={0} tick={{ fontSize: 12 }} />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="Volume" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <th className={`p-2 text-left ${className}`}>{children}</th>;
-}
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`p-2 align-top ${className}`}>{children}</td>;
 }
