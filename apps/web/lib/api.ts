@@ -47,7 +47,7 @@ type DashboardData = {
 
 // toggle between mock & live
 const USE_LIVE_API = false;
-const BASE_URL = "http://localhost:4001";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4001";
 
 export async function getDashboardData(): Promise<DashboardData> {
   if (!USE_LIVE_API) {
