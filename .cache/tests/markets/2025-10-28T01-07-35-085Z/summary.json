@@ -1,0 +1,28 @@
+{
+  "counts": {
+    "normalized": 500,
+    "withVolumeField": 500,
+    "withOiField": 500,
+    "idCoverage": {
+      "source_market_id": 500,
+      "event_id": 0,
+      "condition_id": 500
+    }
+  },
+  "sums": {
+    "volumeFieldSum": 4768285.668925002,
+    "oiFieldSum": 0
+  },
+  "categoryBreakdown": [
+    {
+      "category": false,
+      "vol": 4768285.668925002,
+      "count": 500
+    }
+  ],
+  "notes": {
+    "volumeFieldName": "volume24h",
+    "oiFieldName": "openInterest",
+    "hint": "Per-market 24h volume from trades will overwrite volume24h; per-market OI kept from Gamma unless you find a breakdown endpoint."
+  }
+}

@@ -1,6 +1,6 @@
 export type MarketNorm = {
   id: string;
-  platform: "polymarket" | "kalshi";
+  platform: "polymarket";
   question: string;
   category?: string;
   yesPrice: number | null;
@@ -8,7 +8,7 @@ export type MarketNorm = {
   volume24h: number | null;
   openInterest: number | null;
   lastTradeTs: string | null; // ISO
-  raw: unknown;
+  raw: Record<string, any>;
 };
 
 export type SummaryStats = {
@@ -17,7 +17,6 @@ export type SummaryStats = {
   totalOpenInterest: number;
   byPlatform: {
     polymarket: { active: number; vol24h: number; oi: number };
-    kalshi: { active: number; vol24h: number; oi: number };
   };
   byCategory: Array<{ category: string; vol24h: number; count: number }>;
 };

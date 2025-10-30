@@ -1,3 +1,4 @@
+// packages/core/schema.ts
 import { MarketNorm } from "./types";
 
 const num = (x: any): number | null => {
@@ -6,9 +7,24 @@ const num = (x: any): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
+function cleanCategory(m: any): string {
+  if (typeof m?.category === "string" && m.category.trim()) return m.category.trim();
+  if (Array.isArray(m?.tags) && m.tags[0]) return String(m.tags[0]).trim();
+  if (Array.isArray(m?.events) && m.events[0]?.category) return String(m.events[0].category).trim();
+  return "uncategorized";
+}
+
+// try to keep stable join keys for trades/OI
+function sourceMarketId(raw: any): number | null {
+  const cand =
+    raw?.id ??
+    raw?.marketId ??
+    (typeof raw?.slug === "string" ? raw.slug.match(/(\d+)(?!.*\d)/)?.[1] : undefined);
+  const n = Number(cand);
+  return Number.isFinite(n) ? n : null;
+}
+
 export const normalizePolymarket = (payload: any): MarketNorm[] => {
-  // Accept either { markets: { nodes: [...] }} from GraphQL or plain arrays
-  // GraphQL shape: { data: { markets: { nodes: [...] } } } will be flattened by the caller
   const list =
     Array.isArray(payload?.markets?.nodes) ? payload.markets.nodes :
     Array.isArray(payload?.markets)        ? payload.markets :
@@ -22,38 +38,16 @@ export const normalizePolymarket = (payload: any): MarketNorm[] => {
       id: `poly_${m.id ?? m.slug ?? m.ticker ?? m.question}`,
       platform: "polymarket",
       question: m.question ?? m.title ?? "unknown",
-      category: m.category ?? (Array.isArray(m.tags) && m.tags[0]) ?? "uncategorized",
+      // cleaned category
+      category: cleanCategory(m),
       yesPrice: num(m.yes_price ?? prob),
-      noPrice: num(m.no_price ?? (typeof prob === "number" ? 1 - prob : null)),
-      // ✅ Include GraphQL fields (dayVolume + openInterest) + legacy fallbacks
-      volume24h: num(m.volume24hr ?? m.volume_24h ?? m.volume24h ?? m.day_volume ?? m.dayVolume),
-      openInterest: num(m.open_interest ?? m.openInterest ?? m.oi ?? m.openInterest),
-      lastTradeTs: m.last_trade_time ?? m.lastTradeAt ?? m.updatedAt ?? null,
-      raw: m,
-    };
-  });
-};
-
-export const normalizeKalshi = (payload: any): MarketNorm[] => {
-  const list =
-    Array.isArray(payload?.markets) ? payload.markets :
-    Array.isArray(payload)         ? payload :
-    [];
-
-  return list.map((m: any) => {
-    const prob = m.implied_prob ?? m.last_price_yes;
-
-    return {
-      id: `kal_${m.ticker ?? m.id ?? m.question}`,
-      platform: "kalshi",
-      question: m.title ?? m.question ?? "unknown",
-      category: m.category ?? m.classification ?? "uncategorized",
-      yesPrice: num(m.yes_price ?? m.last_price_yes ?? prob),
-      noPrice: num(m.no_price ?? m.last_price_no ?? (typeof prob === "number" ? 1 - prob : null)),
-      volume24h: num(m.volume_24h ?? m.day_volume),
-      openInterest: num(m.open_interest ?? m.open_interest_usd ?? m.oi),
-      lastTradeTs: m.last_trade_time ?? m.last_trade_at ?? m.close_time ?? null,
-      raw: m,
+      noPrice:  num(m.no_price ?? (typeof prob === "number" ? 1 - prob : null)),
+      // keep whatever Gamma gives; we'll overwrite with trades truth in the worker
+      volume24h:     num(m.volume24hr ?? m.volume_24h ?? m.volume24h ?? m.day_volume ?? m.dayVolume),
+      openInterest:  num(m.open_interest ?? m.openInterest ?? m.oi),
+      lastTradeTs:   m.last_trade_time ?? m.lastTradeAt ?? m.updatedAt ?? null,
+      // keep raw so we can pull numeric ids later
+      raw: { ...m, _sourceMarketId: sourceMarketId(m) },
     };
   });
 };

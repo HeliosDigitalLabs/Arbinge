@@ -1,0 +1,103 @@
+{
+  "counts": {
+    "normalized": 500,
+    "withVolumeField": 500,
+    "withOiField": 500,
+    "idCoverage": {
+      "source_market_id": 500,
+      "event_id": 0,
+      "condition_id": 500
+    }
+  },
+  "sums": {
+    "volumeFieldSum": 0,
+    "oiFieldSum": 0
+  },
+  "categoryBreakdown": [
+    {
+      "category": "US-current-affairs",
+      "vol": 0,
+      "count": 103
+    },
+    {
+      "category": "Tech",
+      "vol": 0,
+      "count": 5
+    },
+    {
+      "category": "Pop-Culture ",
+      "vol": 0,
+      "count": 28
+    },
+    {
+      "category": "Crypto",
+      "vol": 0,
+      "count": 64
+    },
+    {
+      "category": "Coronavirus",
+      "vol": 0,
+      "count": 36
+    },
+    {
+      "category": "Sports",
+      "vol": 0,
+      "count": 93
+    },
+    {
+      "category": false,
+      "vol": 0,
+      "count": 13
+    },
+    {
+      "category": "Olympics",
+      "vol": 0,
+      "count": 2
+    },
+    {
+      "category": "NBA Playoffs",
+      "vol": 0,
+      "count": 73
+    },
+    {
+      "category": "NFTs",
+      "vol": 0,
+      "count": 6
+    },
+    {
+      "category": "Business",
+      "vol": 0,
+      "count": 7
+    },
+    {
+      "category": "Science",
+      "vol": 0,
+      "count": 3
+    },
+    {
+      "category": "Global Politics",
+      "vol": 0,
+      "count": 5
+    },
+    {
+      "category": "Space",
+      "vol": 0,
+      "count": 2
+    },
+    {
+      "category": "Art",
+      "vol": 0,
+      "count": 31
+    },
+    {
+      "category": "Chess",
+      "vol": 0,
+      "count": 29
+    }
+  ],
+  "notes": {
+    "volumeFieldName": "volume24h",
+    "oiFieldName": "openInterest",
+    "hint": "Per-market 24h volume from trades will overwrite volume24h; per-market OI kept from Gamma unless you find a breakdown endpoint."
+  }
+}

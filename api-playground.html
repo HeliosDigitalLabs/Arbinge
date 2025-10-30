@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arbinge API Playground</title>
+  <style>
+    body { font-family: monospace; background:#111; color:#0f0; padding:20px; }
+    pre { white-space: pre-wrap; word-break: break-word; background:#000; padding:10px; border-radius:8px; }
+    button { margin:4px; padding:8px 12px; background:#222; color:#0f0; border:1px solid #0f0; cursor:pointer; }
+    button:hover { background:#0f0; color:#000; }
+  </style>
+</head>
+<body>
+  <h1>Arbinge API Playground</h1>
+  <button onclick="load('summary/poly')">Summary</button>
+  <button onclick="load('markets/poly')">Markets</button>
+  <button onclick="load('summary')">Combined Summary</button>
+  <pre id="out">Press a button to fetch data...</pre>
+  <script>
+    async function load(path) {
+      const out = document.getElementById("out");
+      out.textContent = "Loading " + path + " ...";
+      try {
+        const res = await fetch(`http://104.248.224.160:4001/v1/${path}`);
+        const data = await res.json();
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = "Error: " + e;
+      }
+    }
+  </script>
+</body>
+</html>

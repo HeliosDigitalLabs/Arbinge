@@ -1,0 +1,72 @@
+[
+  {
+    "id": "poly_12",
+    "question": "Will Joe Biden get Coronavirus before the election?",
+    "category": "US-current-affairs",
+    "yesPrice": null,
+    "noPrice": null,
+    "volume24h": 0,
+    "openInterest": null,
+    "ids": {
+      "source_market_id": 12,
+      "event_id": null,
+      "condition_id": "0xe3b423dfad8c22ff75c9899c4e8176f628cf4ad4caa00481764d320e7415f7a9"
+    }
+  },
+  {
+    "id": "poly_17",
+    "question": "Will Airbnb begin publicly trading before Jan 1, 2021?",
+    "category": "Tech",
+    "yesPrice": null,
+    "noPrice": null,
+    "volume24h": 0,
+    "openInterest": null,
+    "ids": {
+      "source_market_id": 17,
+      "event_id": null,
+      "condition_id": "0x44f10d1cd5aaed4b7ae0b5edb76790f54f45dc0bcaa86831c83d865c774fbb90"
+    }
+  },
+  {
+    "id": "poly_18",
+    "question": "Will a new Supreme Court Justice be confirmed before Nov 3rd, 2020?",
+    "category": "US-current-affairs",
+    "yesPrice": null,
+    "noPrice": null,
+    "volume24h": 0,
+    "openInterest": null,
+    "ids": {
+      "source_market_id": 18,
+      "event_id": null,
+      "condition_id": "0x3e0524de013d9dc359f5eb370773f25de2f03d3200294cfd0fa7dac2f399d101"
+    }
+  },
+  {
+    "id": "poly_19",
+    "question": "Will Kim Kardashian and Kanye West divorce before Jan 1, 2021?",
+    "category": "Pop-Culture ",
+    "yesPrice": null,
+    "noPrice": null,
+    "volume24h": 0,
+    "openInterest": null,
+    "ids": {
+      "source_market_id": 19,
+      "event_id": null,
+      "condition_id": "0x9b946f54f3428aafc308c33aa04a943fe13a011bdac9a9b66e1ba16c416ca256"
+    }
+  },
+  {
+    "id": "poly_20",
+    "question": "Will Coinbase begin publicly trading before Jan 1, 2021?",
+    "category": "Crypto",
+    "yesPrice": null,
+    "noPrice": null,
+    "volume24h": 0,
+    "openInterest": null,
+    "ids": {
+      "source_market_id": 20,
+      "event_id": null,
+      "condition_id": "0x5d1a1ab716fd06943441fe27cde0089651ce769bec55e191b6953468a0e9f0d0"
+    }
+  }
+]

@@ -47,6 +47,10 @@ app.get("/v1/markets/kalshi", cacheJSON("hot:kalshi:markets"));
 
 app.get("/healthz", (_req,res)=> res.json({ ok:true }));
 
+app.get("/", (_req, res) => {
+  res.sendFile(process.cwd() + "/api-playground.html");
+});
+
 async function main() {
   try {
     await redis.connect();
